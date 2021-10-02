@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    return "<p>Fourth hy and Final Bla blab Release Branch, World!</p>"
+    return "<p>Change made on remote origin/master</p>"
 
 
 if __name__ == "__main__":
