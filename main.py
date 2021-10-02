@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    return "<p>Merge to Release, World!</p>"
+    return "<p>cherry in FWS0001</p>"
 
 
 if __name__ == "__main__":
