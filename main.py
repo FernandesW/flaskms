@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    return "<p>Commited on remote again</p>"
+    return "<p>Commited on remo</p>"
 
 
 if __name__ == "__main__":
