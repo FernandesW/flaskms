@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    return "<p>Commited on remo</p>"
+    return "<p>Commited on laptop</p>"
 
 
 if __name__ == "__main__":
