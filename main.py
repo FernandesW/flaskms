@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    return "<p>Commited Change</p>"
+    return "<p>Commited Change Before Push</p>"
 
 
 if __name__ == "__main__":
