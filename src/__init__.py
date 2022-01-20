@@ -1,10 +1,16 @@
 import os
-
-from flask import Flask, jsonify
-from src.database import db, ma
+import datetime
+from flask import Flask, jsonify, redirect
+from src.database import db, ma, Bookmark
+from src.constants.http_status_codes import (
+    HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR,
+    HTTP_302_FOUND
+)
 from src.auth import auth
 from src.bookmarks import bookmarks
 from flask_jwt_extended import JWTManager
+from flasgger import Swagger, swag_from
+from src.config.swagger import template,swagger_config
 def create_app(test_config=None):
     app = Flask(__name__,
                 instance_relative_config=True)
@@ -19,7 +25,12 @@ def create_app(test_config=None):
             SQLALCHEMY_TRACK_MODIFICATIONS=False,
             JWT_SECRET_KEY=os.environ.get(
                 "JWT_SECRET_KEY"
-            )
+            ),
+            JWT_ACCESS_TOKEN_EXPIRES=datetime.timedelta(minutes=59),
+            SWAGGER={
+                'title':'Bookmarks API',
+                'uiversion': 3
+            }
         )
     else:
         app.config.from_mapping(test_config)
@@ -30,4 +41,26 @@ def create_app(test_config=None):
     JWTManager(app)
     app.register_blueprint(auth)
     app.register_blueprint(bookmarks)
+    Swagger(app,config=swagger_config,template=template)
+    @app.route("/<short_url>",methods=["GET"])
+    @swag_from("./docs/short_url.yaml")
+    def redirect_to_url(short_url):
+        bookmark=Bookmark.query.filter_by(short_url=short_url).first_or_404()
+        if bookmark:
+            bookmark.visits+=1
+            db.session.commit()
+            return redirect(bookmark.url),HTTP_302_FOUND
+
+    @app.errorhandler(HTTP_404_NOT_FOUND)
+    def handle_404(e):
+        return jsonify({'error':'Not found'}), HTTP_404_NOT_FOUND
+
+
+    @app.errorhandler(HTTP_500_INTERNAL_SERVER_ERROR)
+    def handle_500(e):
+        return jsonify({'error':'Internal Server Error'}), HTTP_500_INTERNAL_SERVER_ERROR
+        
+
+
+
     return app

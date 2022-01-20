@@ -33,7 +33,6 @@ class Bookmark(db.Model):
     def generate_short_characters(self):
         characters = string.digits+string.ascii_letters
         picked_characters = ''.join(random.choices(characters, k=3))
-
         link = self.query.filter_by(short_url=picked_characters).first()
 
         if link:

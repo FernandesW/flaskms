@@ -7,6 +7,7 @@ from src.constants.http_status_codes import (
     HTTP_200_OK
 )
 from flask import Blueprint, jsonify, request, make_response
+from flasgger import swag_from
 from werkzeug.security import check_password_hash, generate_password_hash
 import validators
 from src.database import User, db, ma, BookmarkSchema, UserSchema
@@ -22,6 +23,7 @@ auth = Blueprint("auth", __name__, url_prefix="/api/v1/auth")
 
 
 @auth.route('/register', methods=["POST"])
+@swag_from("./docs/auth/login.yaml")
 def register():
     if request.json is None:
         return jsonify({"Error": "Username Not provided"})
@@ -62,6 +64,7 @@ def register():
 
 
 @auth.route("/login", methods=["POST"])
+@swag_from("./docs/auth/login.yaml")
 def login():
     email = request.json.get("email", "")
     password = request.json.get("password", "")

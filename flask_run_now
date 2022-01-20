@@ -1,0 +1,3 @@
+#!/bin/bash 
+#Run source flask_run_now to activate shell
+. ${PWD}/flask_venv/bin/activate
